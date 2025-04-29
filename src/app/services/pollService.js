@@ -47,3 +47,9 @@ export const voteOnPoll = async (pollId, optionIndex) => {
   const { data } = await api.post(`/polls/${pollId}/vote`, { optionIndex });
   return data.data;
 };
+
+// ✅ Reset votes for a business and optional status
+export const resetVotes = async (businessSlug, status = "") => {
+  const { data } = await api.post(`/polls/reset`, { businessSlug, status });
+  return data;
+};

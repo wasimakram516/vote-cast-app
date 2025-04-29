@@ -239,7 +239,7 @@ export default function ManagePollsPage() {
         <Stack
           direction={{ xs: "column", sm: "row" }}
           justifyContent="space-between"
-          alignItems={{ xs: "stretch", sm: "center" }}
+          alignItems={{ xs: "stretch", sm: "left" }}
           spacing={2}
           mb={2}
         >
