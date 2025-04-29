@@ -475,7 +475,7 @@ function RealPoll({ businessSlug }) {
           sx={{
             width: 140,
             height: 140,
-            mb: 4,
+            my: 4,
             mx: "auto",
             position: "relative",
           }}
