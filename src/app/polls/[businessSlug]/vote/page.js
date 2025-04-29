@@ -21,6 +21,8 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+
 import ReplayIcon from "@mui/icons-material/Replay";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
@@ -53,6 +55,23 @@ function RealPoll({ businessSlug }) {
   const [submitting, setSubmitting] = useState(false);
   const [finished, setFinished] = useState(false);
   const [businessInfo, setBusinessInfo] = useState(null);
+
+  const getProgressColor = () => {
+    const percent = ((currentIndex + 1) / polls.length) * 100;
+
+    if (percent <= 8) return "#B71C1C"; // Very Dark Red
+    if (percent <= 16) return "#C62828"; // Darker Red
+    if (percent <= 24) return "#D32F2F"; // Dark Red
+    if (percent <= 32) return "#E53935"; // Medium Red
+    if (percent <= 40) return "#F4511E"; // Red-Orange
+    if (percent <= 48) return "#FB8C00"; // Orange
+    if (percent <= 56) return "#F9A825"; // Dark Yellow
+    if (percent <= 64) return "#FBC02D"; // Yellow
+    if (percent <= 72) return "#C0CA33"; // Yellow-Green
+    if (percent <= 80) return "#7CB342"; // Light Green
+    if (percent <= 88) return "#43A047"; // Medium Green
+    return "#388E3C"; // Dark Green
+  };
 
   const fetchBusinessInfo = async () => {
     try {
@@ -185,6 +204,55 @@ function RealPoll({ businessSlug }) {
         </Stack>
 
         <Divider sx={{ mb: 3 }} />
+
+        {/* Progress Circle */}
+        <Box
+          sx={{
+            width: 140,
+            height: 140,
+            mb: 4,
+            mx: "auto",
+            position: "relative",
+          }}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={[
+                  { name: "Completed", value: currentIndex + 1 },
+                  {
+                    name: "Remaining",
+                    value: polls.length - (currentIndex + 1),
+                  },
+                ]}
+                dataKey="value"
+                startAngle={90}
+                endAngle={-270}
+                innerRadius={50}
+                outerRadius={70}
+                paddingAngle={2}
+              >
+                <Cell fill={getProgressColor()} />
+                <Cell fill="#e0e0e0" />
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+
+          {/* Center Text */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              {currentIndex + 1}/{polls.length}
+            </Typography>
+          </Box>
+        </Box>
 
         {/* Poll Card */}
         <Box
