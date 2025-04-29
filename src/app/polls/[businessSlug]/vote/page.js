@@ -205,55 +205,6 @@ function RealPoll({ businessSlug }) {
 
         <Divider sx={{ mb: 3 }} />
 
-        {/* Progress Circle */}
-        <Box
-          sx={{
-            width: 140,
-            height: 140,
-            mb: 4,
-            mx: "auto",
-            position: "relative",
-          }}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={[
-                  { name: "Completed", value: currentIndex + 1 },
-                  {
-                    name: "Remaining",
-                    value: polls.length - (currentIndex + 1),
-                  },
-                ]}
-                dataKey="value"
-                startAngle={90}
-                endAngle={-270}
-                innerRadius={50}
-                outerRadius={70}
-                paddingAngle={2}
-              >
-                <Cell fill={getProgressColor()} />
-                <Cell fill="#e0e0e0" />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-
-          {/* Center Text */}
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              textAlign: "center",
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              {currentIndex + 1}/{polls.length}
-            </Typography>
-          </Box>
-        </Box>
-
         {/* Poll Card */}
         <Box
           sx={{
@@ -517,6 +468,55 @@ function RealPoll({ businessSlug }) {
               )}
             </CardContent>
           </Card>
+        </Box>
+
+        {/* Progress Circle */}
+        <Box
+          sx={{
+            width: 140,
+            height: 140,
+            mb: 4,
+            mx: "auto",
+            position: "relative",
+          }}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={[
+                  { name: "Completed", value: currentIndex + 1 },
+                  {
+                    name: "Remaining",
+                    value: polls.length - (currentIndex + 1),
+                  },
+                ]}
+                dataKey="value"
+                startAngle={90}
+                endAngle={-270}
+                innerRadius={50}
+                outerRadius={70}
+                paddingAngle={2}
+              >
+                <Cell fill={getProgressColor()} />
+                <Cell fill="#e0e0e0" />
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+
+          {/* Center Text */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              {currentIndex + 1}/{polls.length}
+            </Typography>
+          </Box>
         </Box>
       </Box>
 
