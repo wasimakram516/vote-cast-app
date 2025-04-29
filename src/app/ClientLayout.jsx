@@ -2,11 +2,12 @@
 
 import Navbar from "@/app/components/Navbar";
 import { Box } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
-  const hideNavbar = pathname.startsWith("/cms/polls/results/full");
+  const { businessSlug } = useParams(); 
+  const hideNavbar = pathname.startsWith(`/polls/${businessSlug}/results`);
 
   return (
     <>

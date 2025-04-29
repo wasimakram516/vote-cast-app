@@ -232,7 +232,7 @@ export default function ResultsPage() {
                   color="primary"
                   onClick={() =>
                     window.open(
-                      `/cms/polls/results/full?businessSlug=${selectedBusiness}&status=${selectedStatus}`,
+                      `/polls/${selectedBusiness}/results?status=${selectedStatus}`,
                       "_blank"
                     )
                   }

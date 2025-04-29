@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useParams,useSearchParams } from "next/navigation";
 import {
   Box,
   CircularProgress,
@@ -14,9 +14,10 @@ import { getResults } from "@/app/services/resultService";
 import ResultsChart from "@/app/components/ResultsChart";
 
 export default function FullScreenResultsPage() {
-  const searchParams = useSearchParams();
-  const businessSlug = searchParams.get("businessSlug");
-  const status = searchParams.get("status") || "";
+  const params = useParams();
+const searchParams = useSearchParams();
+const businessSlug = params.businessSlug;
+const status = searchParams.get("status") || "";
 
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,7 @@ export default function FullScreenResultsPage() {
   const fetchResults = async () => {
     try {
       setLoading(true);
+      
       const data = await getResults(businessSlug, status);
       setResults(data);
     } catch (error) {
