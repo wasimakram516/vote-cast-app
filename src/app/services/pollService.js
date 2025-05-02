@@ -53,3 +53,30 @@ export const resetVotes = async (businessSlug, status = "") => {
   const { data } = await api.post(`/polls/reset`, { businessSlug, status });
   return data;
 };
+
+// ✅ Export polls to Excel
+export const exportPollsToExcel = async (businessSlug, status = "") => {
+  const response = await api.post(
+    "/polls/export",
+    { businessSlug, status },
+    {
+      responseType: "blob", 
+    }
+  );
+
+  // Trigger download
+  const blob = new Blob([response.data], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute(
+    "download",
+    `${businessSlug}-polls-${status || "all"}.xlsx`
+  );
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};

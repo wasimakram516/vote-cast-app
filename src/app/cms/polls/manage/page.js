@@ -39,6 +39,7 @@ import {
   clonePoll,
   updatePoll,
   deletePoll,
+  exportPollsToExcel,
 } from "@/app/services/pollService";
 import { getBusinesses } from "@/app/services/businessService";
 import BreadcrumbsNav from "@/app/components/BreadcrumbsNav";
@@ -281,6 +282,38 @@ export default function ManagePollsPage() {
               }}
             >
               Create Poll
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="success"
+              disabled={!selectedBusiness}
+              onClick={async () => {
+                if (!selectedBusiness) {
+                  showMessage(
+                    "Please select a business to export polls.",
+                    "warning"
+                  );
+                  return;
+                }
+                try {
+                  setLoading(true);
+                  await exportPollsToExcel(selectedBusiness, selectedStatus);
+                } catch (error) {
+                  console.error(error);
+                  showMessage("Failed to export polls.", "error");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              sx={{
+                minWidth: { xs: "100%", sm: "auto" },
+                fontWeight: "bold",
+                fontSize: "1rem",
+                py: 1.5,
+              }}
+            >
+              Export Polls
             </Button>
           </Stack>
         </Stack>
