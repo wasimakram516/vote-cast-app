@@ -1,22 +1,32 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Box, Container, Typography, Divider } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import QRCode from "react-qr-code";
 import Image from "next/image";
 
 export default function PublicQrPage() {
   const { businessSlug } = useParams();
-  const askPageUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/queries/${businessSlug}/ask`
-      : "";
+  const [askPageUrl, setAskPageUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && businessSlug) {
+      setAskPageUrl(`${window.location.origin}/queries/${businessSlug}/ask`);
+    }
+  }, [businessSlug]);
 
   return (
     <Container
       maxWidth="sm"
       sx={{
-        minHeight:"100vh",
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -47,11 +57,7 @@ export default function PublicQrPage() {
             alt="WhiteWall Logo"
             width={100}
             height={30}
-            style={{
-              width: "100%",
-              height: "auto",
-              objectFit: "contain",
-            }}
+            style={{ width: "100%", height: "auto", objectFit: "contain" }}
           />
         </Box>
 
@@ -67,16 +73,13 @@ export default function PublicQrPage() {
             alt="VoteCast Logo"
             width={120}
             height={40}
-            style={{
-              width: "100%",
-              height: "auto",
-              objectFit: "contain",
-            }}
+            style={{ width: "100%", height: "auto", objectFit: "contain" }}
           />
         </Box>
       </Box>
+
       {/* ✅ Heading */}
-      <Typography variant="h4" fontWeight="bold" gutterBottom>
+      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mt: 4 }}>
         Scan to Ask a Question
       </Typography>
 
@@ -85,25 +88,31 @@ export default function PublicQrPage() {
         question or vote on existing ones.
       </Typography>
 
-      {/* ✅ QR Code */}
-      <Box
-        sx={{
-          p: 3,
-          borderRadius: 2,
-          backgroundColor: "#fff",
-          boxShadow: 3,
-          width: "100%",
-          maxWidth: 300,
-        }}
-      >
-        <QRCode
-          value={askPageUrl}
-          size={256}
-          style={{ width: "100%", height: "auto" }}
-        />
-      </Box>
+      {/* ✅ QR Code or Loader */}
+      {askPageUrl ? (
+        <Box
+          sx={{
+            p: 3,
+            borderRadius: 2,
+            backgroundColor: "#fff",
+            boxShadow: 3,
+            width: "100%",
+            maxWidth: 300,
+          }}
+        >
+          <QRCode
+            value={askPageUrl}
+            size={256}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            style={{ width: "100%", height: "auto" }}
+          />
+        </Box>
+      ) : (
+        <CircularProgress sx={{ mt: 4 }} />
+      )}
 
-      {/* ✅ Optional Footer Note */}
+      {/* ✅ Footer */}
       <Typography variant="caption" color="text.secondary" mt={3}>
         Powered by WhiteWall Digital Solutions
       </Typography>
