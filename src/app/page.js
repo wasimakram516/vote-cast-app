@@ -1,10 +1,19 @@
 "use client";
 
-import { Box, Button, Typography, Stack, Divider } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Stack,
+  Divider,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import PollIcon from "@mui/icons-material/Poll";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ShieldIcon from "@mui/icons-material/Shield";
+import ForumIcon from "@mui/icons-material/Forum";
+import PeopleIcon from "@mui/icons-material/People";
+import ShareIcon from "@mui/icons-material/Share";
 
 export default function HomePage() {
   const router = useRouter();
@@ -31,7 +40,7 @@ export default function HomePage() {
       <Box
         sx={{
           width: "100%",
-          maxWidth: 640,
+          maxWidth: 720,
           backgroundColor: "white",
           p: { xs: 3, sm: 5 },
           borderRadius: 4,
@@ -47,7 +56,7 @@ export default function HomePage() {
           letterSpacing={2}
           gutterBottom
         >
-          Polls Made Simple
+          Polls & Event Engagement Made Simple
         </Typography>
 
         {/* Main Heading */}
@@ -57,9 +66,7 @@ export default function HomePage() {
 
         {/* Description */}
         <Typography variant="body1" color="text.secondary" mb={4}>
-          Create sleek, branded polls with real-time results, media-rich options,
-          and anonymous voting. Engage your audience like never before — powered
-          by WhiteWall Digital Solutions.
+          Build branded polls, capture live feedback, manage visitor questions, and track engagement with QR-powered tools — powered by WhiteWall Digital Solutions.
         </Typography>
 
         {/* Buttons */}
@@ -117,28 +124,51 @@ export default function HomePage() {
         <Stack
           spacing={2}
           direction={{ xs: "column", sm: "row" }}
+          flexWrap="wrap"
           justifyContent="center"
           alignItems="center"
           textAlign="center"
+          rowGap={3}
         >
-          <Stack alignItems="center" spacing={1}>
+          <Stack alignItems="center" spacing={1} width={120}>
             <PollIcon color="primary" fontSize="large" />
             <Typography variant="subtitle2" fontWeight="bold">
               Interactive Polls
             </Typography>
           </Stack>
 
-          <Stack alignItems="center" spacing={1}>
+          <Stack alignItems="center" spacing={1} width={120}>
             <BarChartIcon color="success" fontSize="large" />
             <Typography variant="subtitle2" fontWeight="bold">
               Real-Time Results
             </Typography>
           </Stack>
 
-          <Stack alignItems="center" spacing={1}>
+          <Stack alignItems="center" spacing={1} width={120}>
             <ShieldIcon color="warning" fontSize="large" />
             <Typography variant="subtitle2" fontWeight="bold">
-              Secure & Anonymous
+              Secure Voting
+            </Typography>
+          </Stack>
+
+          <Stack alignItems="center" spacing={1} width={120}>
+            <ForumIcon color="secondary" fontSize="large" />
+            <Typography variant="subtitle2" fontWeight="bold">
+              Visitor Questions
+            </Typography>
+          </Stack>
+
+          <Stack alignItems="center" spacing={1} width={120}>
+            <PeopleIcon sx={{ color: "#6d4c41" }} fontSize="large" />
+            <Typography variant="subtitle2" fontWeight="bold">
+              Live Visitors
+            </Typography>
+          </Stack>
+
+          <Stack alignItems="center" spacing={1} width={120}>
+            <ShareIcon sx={{ color: "#00838f" }} fontSize="large" />
+            <Typography variant="subtitle2" fontWeight="bold">
+              QR Link Sharing
             </Typography>
           </Stack>
         </Stack>
