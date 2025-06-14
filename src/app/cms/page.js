@@ -12,6 +12,7 @@ import {
 import GroupIcon from "@mui/icons-material/Group";
 import BusinessIcon from "@mui/icons-material/Business";
 import PollIcon from "@mui/icons-material/Poll";
+import ForumIcon from "@mui/icons-material/Forum";
 import DashboardCard from "@/app/components/DashboardCard";
 import { useAuth } from "@/app/context/AuthContext";
 
@@ -22,9 +23,7 @@ export default function CmsDashboard() {
   const isBusiness = user?.role === "business";
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 6 }}>
-      {/* Breadcrumbs can be here if needed */}
-
+    <Container maxWidth="lg" sx={{ mt: 6, mb:6 }}>
       {/* Heading Section */}
       <Box sx={{ mb: 2 }}>
         <Stack
@@ -40,8 +39,8 @@ export default function CmsDashboard() {
             </Typography>
             <Typography variant="body1" color="text.secondary">
               {isAdmin
-                ? "You have full access to manage businesses and polls."
-                : "You can manage and launch polls for your business."}
+                ? "You have full access to manage businesses, polls, and questions."
+                : "You can manage and launch polls and questions for your business."}
             </Typography>
           </Box>
         </Stack>
@@ -59,7 +58,7 @@ export default function CmsDashboard() {
         {isAdmin && (
           <DashboardCard
             title="Users"
-            description="View and manage all registered Users."
+            description="View and manage all registered users."
             buttonLabel="Manage Users"
             icon={<GroupIcon />}
             color="primary.main"
@@ -68,25 +67,34 @@ export default function CmsDashboard() {
         )}
 
         {(isAdmin || isBusiness) && (
-          <DashboardCard
-            title="Businesses"
-            description="View and manage your businesses."
-            buttonLabel="Manage Businesses"
-            icon={<BusinessIcon />}
-            color="#ff7043"
-            route="/cms/businesses"
-          />
-        )}
+          <>
+            <DashboardCard
+              title="Businesses"
+              description="View and manage your businesses."
+              buttonLabel="Manage Businesses"
+              icon={<BusinessIcon />}
+              color="#ff7043"
+              route="/cms/businesses"
+            />
 
-        {(isAdmin || isBusiness) && (
-          <DashboardCard
-            title="Polls"
-            description="Create, launch, and track real-time polls."
-            buttonLabel="Manage Polls"
-            icon={<PollIcon />}
-            color="#4caf50" // ✅ Green
-            route="/cms/polls"
-          />
+            <DashboardCard
+              title="Polls"
+              description="Create, launch, and track real-time polls."
+              buttonLabel="Manage Polls"
+              icon={<PollIcon />}
+              color="#4caf50"
+              route="/cms/polls"
+            />
+
+            <DashboardCard
+              title="Visitor Queries"
+              description="Review and manage live questions submitted during events."
+              buttonLabel="View Queries"
+              icon={<ForumIcon />}
+              color="#1976d2"
+              route="/cms/queries"
+            />
+          </>
         )}
       </Grid>
     </Container>

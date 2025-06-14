@@ -31,9 +31,7 @@ export default function RootLayout({ children }) {
         <ThemeRegistry>
           <AuthProvider>
             <MessageProvider>
-            <ClientLayout>
-                {children}
-              </ClientLayout>
+              <ClientLayout>{children}</ClientLayout>
             </MessageProvider>
           </AuthProvider>
         </ThemeRegistry>

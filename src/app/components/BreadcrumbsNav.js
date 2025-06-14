@@ -5,11 +5,14 @@ import { usePathname, useRouter } from "next/navigation";
 
 import HomeIcon from "@mui/icons-material/Home";
 import BusinessIcon from "@mui/icons-material/Business";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import PollIcon from "@mui/icons-material/Poll";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import GroupIcon from "@mui/icons-material/Group";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import LinkIcon from "@mui/icons-material/Link";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 
 const segmentMap = {
   dashboard: {
@@ -24,11 +27,11 @@ const segmentMap = {
     label: "Polls",
     icon: <PollIcon fontSize="small" sx={{ mr: 0.5 }} />,
   },
-  "manage": {
+  manage: {
     label: "Manage Polls",
     icon: <PollIcon fontSize="small" sx={{ mr: 0.5 }} />,
   },
-  "results": {
+  results: {
     label: "Poll Results",
     icon: <BarChartIcon fontSize="small" sx={{ mr: 0.5 }} />,
   },
@@ -42,7 +45,21 @@ const segmentMap = {
   },
   questions: {
     label: "All Questions",
+    icon: <QuestionAnswerIcon fontSize="small" sx={{ mr: 0.5 }} />,
+  },
+
+  // ✅ New /cms/queries routes
+  queries: {
+    label: "Queries",
     icon: <HelpOutlineIcon fontSize="small" sx={{ mr: 0.5 }} />,
+  },
+  "share-link": {
+    label: "Share Link",
+    icon: <LinkIcon fontSize="small" sx={{ mr: 0.5 }} />,
+  },
+  visitors: {
+    label: "Visitors",
+    icon: <PeopleAltIcon fontSize="small" sx={{ mr: 0.5 }} />,
   },
 };
 
