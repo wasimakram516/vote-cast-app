@@ -22,6 +22,9 @@ export default function PublicQrPage() {
   const [business, setBusiness] = useState(null);
   const { language } = useLanguage();
 
+  const isArabic = language === "ar";
+  const dir = isArabic ? "rtl" : "ltr";
+
   const translations = {
     en: {
       scanTitle: "Scan to Ask a Question",
@@ -73,6 +76,7 @@ export default function PublicQrPage() {
   return (
     <Container
       disableGutters
+      dir={dir}
       sx={{
         minHeight: "100vh",
         width: "100%",
