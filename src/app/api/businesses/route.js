@@ -38,7 +38,7 @@ async function generateUniqueSlug(baseSlug) {
 
 export const POST = withAuth(async (req, user) => {
   await dbConnect();
-  const { name, slug, logoUrl, contactEmail, contactPhone, address, owner, poweredByUrl } = await req.json(); // ✅ poweredByUrl added
+  const { name, slug, logoUrl, brandingUrl, contactEmail, contactPhone, address, owner, poweredByUrl } = await req.json();
 
   if (!name || !slug) {
     return jsonResponse(400, "Name and slug are required");
@@ -61,6 +61,7 @@ export const POST = withAuth(async (req, user) => {
     name,
     slug: uniqueSlug,
     logoUrl,
+    brandingUrl,
     owner: ownerId,
     contactEmail,
     contactPhone,

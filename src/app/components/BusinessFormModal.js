@@ -37,6 +37,8 @@ export default function BusinessFormModal({
     slug: "",
     logoFile: null,
     logoPreview: "",
+    brandingFile: null,
+    brandingPreview: null,
     poweredByFile: null,
     poweredByPreview: "",
     contactEmail: "",
@@ -58,6 +60,8 @@ export default function BusinessFormModal({
       slug: safe.slug || "",
       logoFile: null,
       logoPreview: safe.logoUrl || "",
+      brandingFile: null,
+      brandingPreview: safe.brandingUrl || "",
       poweredByFile: null,
       poweredByPreview: safe.poweredByUrl || "",
       contactEmail: safe.contactEmail || "",
@@ -82,6 +86,17 @@ export default function BusinessFormModal({
         ...prev,
         logoFile: file,
         logoPreview: URL.createObjectURL(file),
+      }));
+    }
+  };
+
+  const handleBrandingChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm((prev) => ({
+        ...prev,
+        brandingFile: file,
+        brandingPreview: URL.createObjectURL(file),
       }));
     }
   };
@@ -113,6 +128,7 @@ export default function BusinessFormModal({
 
     try {
       let logoUrl = form.logoPreview;
+      let brandingUrl = form.brandingPreview;
       let poweredByUrl = form.poweredByPreview;
 
       // Upload new logo if selected
@@ -123,6 +139,16 @@ export default function BusinessFormModal({
           headers: { "Content-Type": "multipart/form-data" },
         });
         logoUrl = response.data.data.url;
+      }
+
+      // Upload new branding if selected
+      if (form.brandingFile) {
+        const uploadData = new FormData();
+        uploadData.append("file", form.brandingFile);
+        const response = await api.post("/upload", uploadData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        brandingUrl = response.data.data.url;
       }
 
       // Upload new powered by logo if selected
@@ -139,7 +165,8 @@ export default function BusinessFormModal({
         name: form.name,
         slug: form.slug,
         logoUrl,
-        poweredByUrl, // ✅ include poweredByUrl
+        brandingUrl,
+        poweredByUrl,
         contactEmail: form.contactEmail,
         contactPhone: form.contactPhone,
         address: form.address,
@@ -189,6 +216,20 @@ export default function BusinessFormModal({
             <Avatar
               src={form.logoPreview}
               alt="Logo preview"
+              variant="rounded"
+              sx={{ width: 100, height: 100 }}
+            />
+          )}
+
+          {/* Branding Upload */}
+          <Button startIcon={<CloudUploadIcon />} component="label" variant="outlined">
+            Upload Branding
+            <input type="file" hidden accept="image/*" onChange={handleBrandingChange} />
+          </Button>
+          {form.brandingPreview && (
+            <Avatar
+              src={form.brandingPreview}
+              alt="Branding preview"
               variant="rounded"
               sx={{ width: 100, height: 100 }}
             />

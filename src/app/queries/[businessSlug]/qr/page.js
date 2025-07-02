@@ -6,90 +6,119 @@ import {
   Box,
   Container,
   Typography,
-  Divider,
   CircularProgress,
 } from "@mui/material";
 import QRCode from "react-qr-code";
 import Image from "next/image";
+import Footer from "@/app/components/Footer";
+import { getBusinessBySlug } from "@/app/services/businessService";
+import { useLanguage } from "@/app/context/LanguageContext";
+import LanguageSelector from "@/app/components/LanguageSelector";
 
 export default function PublicQrPage() {
   const { businessSlug } = useParams();
   const [askPageUrl, setAskPageUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [business, setBusiness] = useState(null);
+  const { language } = useLanguage();
+
+  const translations = {
+    en: {
+      scanTitle: "Scan to Ask a Question",
+      scanDesc:
+        "Use your phone to scan this QR code and participate. You can post a new question or vote on existing ones.",
+    },
+    ar: {
+      scanTitle: "امسح لطرح سؤال",
+      scanDesc:
+        "استخدم هاتفك لمسح رمز QR هذا والمشاركة. يمكنك إرسال سؤال جديد أو التصويت على الأسئلة الموجودة.",
+    },
+  };
 
   useEffect(() => {
-    if (typeof window !== "undefined" && businessSlug) {
-      setAskPageUrl(`${window.location.origin}/queries/${businessSlug}/ask`);
+    const fetchBusiness = async () => {
+      try {
+        setLoading(true);
+        const businessData = await getBusinessBySlug(businessSlug);
+        if (typeof window !== "undefined") {
+          const origin = window.location.origin;
+          setAskPageUrl(`${origin}/queries/${businessSlug}/ask`);
+        }
+        setBusiness(businessData);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (businessSlug) {
+      fetchBusiness();
     }
   }, [businessSlug]);
 
+  if (loading || !business || !askPageUrl) {
+    return (
+      <Box
+        minHeight="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Container
-      maxWidth="sm"
+      disableGutters
       sx={{
         minHeight: "100vh",
+        width: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        pt: 10,
         textAlign: "center",
+        pb: 4,
+        px: 2,
       }}
     >
-      {/* ✅ Sticky Branding */}
-      <Box
-        sx={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          bgcolor: "background.default",
-          zIndex: 10,
-          py: 1,
-          px: 4,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
-        }}
-      >
-        <Box sx={{ width: { xs: 35, sm: 40 } }}>
-          <Image
-            src="/WW.png"
-            alt="WhiteWall Logo"
-            width={100}
-            height={30}
-            style={{ width: "100%", height: "auto", objectFit: "contain" }}
+      <LanguageSelector />
+
+      {business?.logoUrl && (
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          <img
+            src={business.logoUrl}
+            alt={`${business.name} Logo`}
+            style={{
+              maxWidth: "250px",
+              width: "70%",
+              height: "auto",
+              objectFit: "contain",
+            }}
           />
         </Box>
+      )}
 
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{ bgcolor: "grey.400", height: 30, mx: 2 }}
-        />
+      <Box sx={{ width: "100%", maxWidth: 800, mt: 4 }}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ textAlign: "center" }}
+        >
+          {translations[language].scanTitle}
+        </Typography>
 
-        <Box sx={{ width: { xs: 90, sm: 90 } }}>
-          <Image
-            src="/voteCast.png"
-            alt="VoteCast Logo"
-            width={120}
-            height={40}
-            style={{ width: "100%", height: "auto", objectFit: "contain" }}
-          />
-        </Box>
-      </Box>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{ mb: 4, textAlign:"center"}}
+        >
+          {translations[language].scanDesc}
+        </Typography>
 
-      {/* ✅ Heading */}
-      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mt: 4 }}>
-        Scan to Ask a Question
-      </Typography>
-
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-        Use your phone to scan this QR code and participate. You can post a new
-        question or vote on existing ones.
-      </Typography>
-
-      {/* ✅ QR Code or Loader */}
-      {askPageUrl ? (
         <Box
           sx={{
             p: 3,
@@ -98,6 +127,8 @@ export default function PublicQrPage() {
             boxShadow: 3,
             width: "100%",
             maxWidth: 300,
+            mx: "auto",
+            mb: 4,
           }}
         >
           <QRCode
@@ -108,14 +139,21 @@ export default function PublicQrPage() {
             style={{ width: "100%", height: "auto" }}
           />
         </Box>
-      ) : (
-        <CircularProgress sx={{ mt: 4 }} />
-      )}
+      </Box>
 
-      {/* ✅ Footer */}
-      <Typography variant="caption" color="text.secondary" mt={3}>
-        Powered by WhiteWall Digital Solutions
-      </Typography>
+      {/* Infographic */}
+      <Box sx={{ width: "70%", mb: 6 }}>
+        <Image
+          src="/info.png"
+          alt="Infographic"
+          width={800}
+          height={400}
+          style={{ width: "100%", height: "auto", objectFit: "contain" }}
+        />
+      </Box>
+
+      {/* Footer */}
+      <Footer />
     </Container>
   );
 }

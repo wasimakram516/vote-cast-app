@@ -34,6 +34,7 @@ export const PUT = withAuth(
       name,
       slug,
       logoUrl,
+      brandingUrl,
       contactEmail,
       contactPhone,
       address,
@@ -63,10 +64,11 @@ export const PUT = withAuth(
     business.name = name || business.name;
     business.slug = updatedSlug;
     business.logoUrl = logoUrl || business.logoUrl;
+    business.brandingUrl = brandingUrl || business.brandingUrl;
     business.contactEmail = contactEmail || business.contactEmail;
     business.contactPhone = contactPhone || business.contactPhone;
     business.address = address || business.address;
-    business.poweredByUrl = poweredByUrl || business.poweredByUrl; // ✅ Update poweredByUrl
+    business.poweredByUrl = poweredByUrl || business.poweredByUrl; 
 
     if (isAdmin && owner && owner !== String(business.owner)) {
       business.owner = owner;

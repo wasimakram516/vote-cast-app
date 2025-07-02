@@ -4,6 +4,7 @@ const BusinessSchema = new mongoose.Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
   logoUrl: { type: String },
+  brandingUrl: { type: String },
 
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 

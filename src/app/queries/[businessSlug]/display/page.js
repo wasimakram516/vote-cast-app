@@ -1,30 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  Chip,
-  Divider,
-} from "@mui/material";
-import Image from "next/image";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { getQuestions } from "@/app/services/questionService";
+import Footer from "@/app/components/Footer";
+import { getBusinessBySlug } from "@/app/services/businessService";
 
 export default function LiveQuestionDisplay() {
   const { businessSlug } = useParams();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [business, setBusiness] = useState(null);
 
   const fetchQuestions = async () => {
     try {
       setLoading(true);
-      const data = await getQuestions(businessSlug);
-      const unanswered = data.filter((q) => !q.answered);
+      const [questionData, businessData] = await Promise.all([
+        getQuestions(businessSlug),
+        getBusinessBySlug(businessSlug),
+      ]);
+      const unanswered = questionData.filter((q) => !q.answered);
       setQuestions(unanswered);
+      setBusiness(businessData);
     } catch (error) {
-      console.error("Failed to fetch questions", error);
+      console.error("Failed to fetch data", error);
     } finally {
       setLoading(false);
     }
@@ -35,6 +35,24 @@ export default function LiveQuestionDisplay() {
     const interval = setInterval(fetchQuestions, 10000);
     return () => clearInterval(interval);
   }, [businessSlug]);
+
+  const bubbles = useMemo(() => {
+    const sorted = [...questions].sort((a, b) => b.votes - a.votes);
+    return sorted.map((q) => {
+      const clampedVotes = Math.min(q.votes, 10);
+      const stepSize = (2 - 1.1) / 9;
+      const fontSize = 1.1 + (clampedVotes - 1) * stepSize;
+      const scale = 1 + clampedVotes * 0.05;
+      return {
+        ...q,
+        floatDuration: `${3 + Math.random() * 3}s`,
+        floatDelay: `${Math.random() * 2}s`,
+        fadeDelay: `${Math.random() * 0.5}s`,
+        fontSize: `${fontSize.toFixed(2)}rem`,
+        scale: scale.toFixed(2),
+      };
+    });
+  }, [questions]);
 
   if (loading && questions.length === 0) {
     return (
@@ -55,131 +73,94 @@ export default function LiveQuestionDisplay() {
         minHeight: "100vh",
         bgcolor: "#f0f4f8",
         px: { xs: 2, sm: 4 },
-        pt: 12,
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 5,
-        justifyContent: "center",
-        alignItems: "flex-start",
+        pt: 2,
+        mb:10
       }}
     >
-      {/* ✅ Sticky Branding */}
-      <Box
-        sx={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          bgcolor: "background.default",
-          zIndex: 10,
-          py: 1,
-          px: 4,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
-        }}
-      >
-        <Box sx={{ width: { xs: 35, sm: 40 } }}>
-          <Image
-            src="/WW.png"
-            alt="WhiteWall Logo"
-            width={100}
-            height={30}
+      {business?.logoUrl && (
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          <img
+            src={business.logoUrl}
+            alt={`${business.name} Logo`}
             style={{
-              width: "100%",
+              maxWidth: "250px",
+              width: "70%",
               height: "auto",
               objectFit: "contain",
             }}
           />
         </Box>
+      )}
 
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{ bgcolor: "grey.400", height: 30, mx: 2 }}
-        />
-
-        <Box sx={{ width: { xs: 90, sm: 90 } }}>
-          <Image
-            src="/voteCast.png"
-            alt="VoteCast Logo"
-            width={120}
-            height={40}
+      {business?.brandingUrl && (
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          <img
+            src={business.brandingUrl}
+            alt={`${business.name} Branding`}
             style={{
-              width: "100%",
-              height: "auto",
+              width: "auto",
+              height: "100px",
               objectFit: "contain",
             }}
           />
         </Box>
-      </Box>
+      )}
 
-      {/* ✅ Question Cards */}
+      {/* Bubbles */}
       {questions.length === 0 ? (
-        <Typography variant="h6" color="text.secondary">
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          textAlign="center"
+          mt={6}
+        >
           No questions yet.
         </Typography>
       ) : (
-        questions.map((q) => (
-          <Box
-            key={q._id}
-            sx={{
-              width: { xs: 280, sm: 320, md: 360 },
-              minHeight: 120,
-              px: 3,
-              py: 3,
-              borderRadius: 4,
-              background: "linear-gradient(135deg, #1565c0, #00acc1)",
-              color: "white",
-              boxShadow: 5,
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-            }}
-          >
-            {/* ✅ Elegant Votes Chip */}
-            <Chip
-              label={`${q.votes}`}
-              sx={{
-                position: "absolute",
-                top: -16,
-                right: -16,
-                bgcolor: "error.main",
-                color: "white",
-                fontWeight: "bold",
-                fontSize: "1.5rem",
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                boxShadow: 2,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            />
+        <div className="question-container">
+          {bubbles.map((q) => {
+            const style = {
+              "--float-duration": q.floatDuration,
+              "--float-delay": q.floatDelay,
+              "--fade-delay": q.fadeDelay,
+              "--scale": q.scale,
+              fontSize: q.fontSize,
+            };
 
-            {/* ✅ Question Text */}
-            <Typography
-              sx={{
-                fontSize: {
-                  xs: "1.2rem",
-                  sm: "1.5rem",
-                  md: "1.8rem",
-                },
-                fontWeight: 600,
-                lineHeight: 1.5,
-                whiteSpace: "pre-wrap",
-                overflowWrap: "break-word",
-              }}
-            >
-              {q.text}
-            </Typography>
-          </Box>
-        ))
+            return (
+              <div key={q._id} className="bubble-question" style={style}>
+                {q.votes > 0 && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: -12,
+                      right: -12,
+                      background: "#d32f2f",
+                      color: "white",
+                      fontWeight: "bold",
+                      borderRadius: "50%",
+                      width: 36,
+                      height: 36,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 0 8px rgba(0,0,0,0.3)",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {q.votes}
+                  </span>
+                )}
+
+                {q.text}
+              </div>
+            );
+          })}
+        </div>
       )}
+
+      {/* Footer */}
+      <Footer />
     </Box>
   );
 }
